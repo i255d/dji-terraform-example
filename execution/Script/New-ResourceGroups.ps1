@@ -1,4 +1,0 @@
-
-
-New-AzResourceGroup -
-
