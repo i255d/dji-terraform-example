@@ -1,0 +1,21 @@
+variable windows_virtual_machine_name {}
+variable resource_group_name {}
+variable location {}
+variable size {}
+variable admin_username {}
+variable admin_password  {}
+variable network_interface_id {}
+variable os_disk_name {}
+variable os_disk_size_gb {}
+variable os_disk_caching {}
+variable os_disk_storage_account_type {}
+#variable sku_name = {"Basic"}
+variable source_image_reference_publisher {}
+variable source_image_reference_offer {}
+variable source_image_reference_sku {}
+variable source_image_reference_version {}
+#variable diag_storage_account_name {}
+#variable diagnostics_resource_group_name {}
+#variable availability_set_id {}
+variable zone {}
+#variable common_tags {}
