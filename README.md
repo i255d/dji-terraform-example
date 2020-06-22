@@ -1,6 +1,6 @@
 # Terraform Example
 ##  The first two steps are fill in the correct paths on the Worksationcft.ps1 file,
-##  and build the first storeage account for Terraform remote State files.
+##  and build the first storage account for Terraform remote State files.
 
     Answer to resource group questions is answered in two ways starting with -
         First - ..\..\01start\Scripts\New-ResourceGroups.ps1
