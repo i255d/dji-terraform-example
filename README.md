@@ -1,4 +1,6 @@
 # Terraform Example
+##  The first two steps are fill in the correct paths on the Worksationcft.ps1 file,
+##  and build the first storeage account for Terraform remote State files.
 
     Answer to resource group questions is answered in two ways starting with -
         First - ..\..\01start\Scripts\New-ResourceGroups.ps1
@@ -38,6 +40,10 @@ infrastructure-as-code\execution\01start\Scripts\01Start-TFBuild.ps1
     $CompanyName = 'danspersonalportal'
     $TFVersion = '1226'
 
+#  First Create the storage account for Terraform State Files
+Before you begin bulding the infrastructure using terraform, a storage account must be created 
+for the Terraform State files.  This begins with the scipt:
+..\infrastructure-as-code\execution\01start\Scripts\02First-StateStorage.ps1
 
 
 

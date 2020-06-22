@@ -16,12 +16,12 @@ try {
 $sastatePath = '\infrastructure-as-code\execution\storage_account_state\tf'
 $CurrentFilePath = $CurrentRepoPath + $sastatePath
 Set-Location -Path $CurrentFilePath
-$env:TF_DATA_DIR = $PrivateConfigurationPath + '/state'
-$env:TF_CLI_CONFIG_FILE = $PrivateConfigurationPath + '/config/terraform.rc'
-$env:TF_LOG_PATH =  $PrivateConfigurationPath + '/log'+ '/terraform.log'
-$env:TF_IN_AUTOMATION = 1
-$env:TF_LOG = 'TRACE'
-$env:TF_INPUT = 0
+# $env:TF_DATA_DIR = $PrivateConfigurationPath + '/state'
+# $env:TF_CLI_CONFIG_FILE = $PrivateConfigurationPath + '/config/terraform.rc'
+# $env:TF_LOG_PATH =  $PrivateConfigurationPath + '/log'+ '/terraform.log'
+# $env:TF_IN_AUTOMATION = 1
+# $env:TF_LOG = 'TRACE'
+# $env:TF_INPUT = 0
 $sourceLocal = '../scripts/local.tf'
 $sourceAzureRM = '../scripts/azurerm.tf'
 $destLocal = './local.tf'

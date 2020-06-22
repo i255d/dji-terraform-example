@@ -1,4 +1,8 @@
-. ..\source\workstationcfg.ps1
+try {
+    . ..\source\workstationcfg.ps1
+} catch {
+    Write-Error -Message "The command prompt is not at `"..\..\..\execution\01start\tf`""
+}
 
 $Feature           = 'virtual_network'
 $ResourceName      = 'prod_virtual_network'
