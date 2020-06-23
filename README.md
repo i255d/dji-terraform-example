@@ -45,6 +45,6 @@ Before you begin bulding the infrastructure using terraform, a storage account m
 for the Terraform State files.  This begins with the scipt:
 ..\infrastructure-as-code\execution\01start\Scripts\02First-StateStorage.ps1
 
-
-
-
+#  Terraform doesn't support Az Login 
+https://www.terraform.io/docs/providers/azurerm/guides/service_principal_client_certificate.html#configuring-the-service-principal-in-terraform
+https://www.terraform.io/docs/providers/azurerm/guides/service_principal_client_certificate.html#configuring-the-service-principal-in-terraform

@@ -68,14 +68,14 @@ if ( -not (Test-Path -Path $testConfig) ) {
         New-Item -Path $env:TF_CLI_CONFIG_FILE -ItemType File
     }
 }
-$env:TF_LOG_PATH = $PrivateConfigurationPath + '/log'
-if ( -not (Test-Path -Path $env:TF_LOG_PATH ) ) {
-    mkdir $env:TF_LOG_PATH
-    if ( -not (Test-Path -Path $($env:TF_LOG_PATH + '/' + 'terraform.log')) ) {
-        New-Item -Path $env:TF_LOG_PATH -ItemType File -Name 'terraform.log'
-    }
+$LOG_PATH = $PrivateConfigurationPath + '/log'
+if ( -not (Test-Path -Path $LOG_PATH ) ) {
+    mkdir $LOG_PATH
 }
-$env:TF_LOG_PATH = $PrivateConfigurationPath + '/log'+ '/terraform.log'
+$env:TF_LOG_PATH = $LOG_PATH + '/terraform.log'
+if ( -not (Test-Path -Path $env:TF_LOG_PATH) ) {
+    New-Item -Path $env:TF_LOG_PATH -ItemType File -Name 'terraform.log'
+}
 
 $env:TF_VAR_plan = $PrivateConfigurationPath + '/out/'
 if ( -not (Test-Path -Path $env:TF_VAR_plan) ) {

@@ -1,5 +1,6 @@
 [CmdletBinding()]
 Param (
+    [string]$ResourceName,
     [string]$CurrentRepoPath,
     [string]$PrivateConfigurationPath,
     [string]$Environment,
@@ -13,15 +14,40 @@ try {
 } catch {
   Write-Error -Message "The command prompt is not at `"..\..\..\execution\01start\tf`""
 }
+dir env:TF_VAR_*
+
+$ResourceName = 'prod_terrafstate444'
+$CurrentRepoPath = $CurrentRepoPath
+$PrivateConfigurationPath = $tfPath
+$Environment = $StartEnvironment 
+$Azurermversion = '2.15' 
+$TerraformVersionPath = $TerraformVersionPath
+$Destroy = $false
+$IfFails = $false
+
+$Feature = 'storage_account_state'
+if ( Test-Path -Path '..\source\tfconfig.ps1' ) {
+    . ..\source\tfconfig.ps1 -CN $Companyname -TF $TFVersion -Ftr $Feature -Rsn $ResourceName
+} else {
+    throw "Test-Path FAILED - '..\source\tfconfig.ps1'"
+}
+# $dotenvpath = '.` ' + $vNetworkPath
+# Invoke-Expression -Command $dotenvpath 
+
+Get-ResourceVariables -ResourceName $ResourceName
+Write-Verbose -Message "`$env:TF_VAR_storage_account_name : $env:TF_VAR_storage_account_name - $env:TF_VAR_share_name"
+$BackendKey = $env:TF_VAR_resource_group_name + '/' + $env:TF_VAR_storage_account_name  + '/' + $env:TF_VAR_share_name + '.tfstate' 
+Write-Verbose -Message "Storage_account Share BackendKey: $BackendKey"
+
 $sastatePath = '\infrastructure-as-code\execution\storage_account_state\tf'
 $CurrentFilePath = $CurrentRepoPath + $sastatePath
 Set-Location -Path $CurrentFilePath
-# $env:TF_DATA_DIR = $PrivateConfigurationPath + '/state'
-# $env:TF_CLI_CONFIG_FILE = $PrivateConfigurationPath + '/config/terraform.rc'
-# $env:TF_LOG_PATH =  $PrivateConfigurationPath + '/log'+ '/terraform.log'
-# $env:TF_IN_AUTOMATION = 1
-# $env:TF_LOG = 'TRACE'
-# $env:TF_INPUT = 0
+$env:TF_DATA_DIR = $PrivateConfigurationPath + '/state'
+$env:TF_CLI_CONFIG_FILE = $PrivateConfigurationPath + '/config/terraform.rc'
+$env:TF_LOG_PATH =  $PrivateConfigurationPath + '/log'+ '/terraform.log'
+$env:TF_IN_AUTOMATION = 1
+$env:TF_LOG = 'TRACE'
+$env:TF_INPUT = 0
 $sourceLocal = '../scripts/local.tf'
 $sourceAzureRM = '../scripts/azurerm.tf'
 $destLocal = './local.tf'
@@ -35,7 +61,7 @@ $TFinit     = $TF + ' init'
 $TFplan     = $TF + ' plan'
 $TFapply    = $TF + ' apply'
 $TFdestroy  = $TF + ' destroy'
-#$env:TF_VAR_plugins         =    $PrivateConfigurationPath + '/plugins'
+$env:TF_VAR_plugins         =    $PrivateConfigurationPath + '/plugins'
 $ENV:TF_CLI_ARGS_init       =    "-plugin-dir=$env:TF_VAR_plugins -reconfigure"
 $ENV:TF_CLI_ARGS_plan       =    '-input=false -out=".//tfplan"'
 $ENV:TF_CLI_ARGS_apply      =    '-input=false -auto-approve ".//tfplan"'
@@ -85,6 +111,9 @@ try {
 } catch {
     throw $_
 }
+
+. C:\01servers\danspersonalportal\cert\Terraform-EnvironmentalAuthVariables.ps1
+
 
 
 if ( -not $Destroy ) {
