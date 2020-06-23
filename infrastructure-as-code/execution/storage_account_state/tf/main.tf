@@ -15,7 +15,7 @@ module "azurerm_resource_group" {
 }
 
 module "azurerm_storage_account" {
-    source = "../../../provisioning/global/azurerm_storage_account"
+    source = "../../../provisioning/global/azurerm_storage_account_state"
     storage_account_name        =  var.storage_account_state_name
     resource_group_name         =  module.azurerm_resource_group.name
     location                    =  var.location

@@ -27,9 +27,13 @@ if ( -not ($currentPath -eq $StartTFPath) ) {
 }
 
 [string] $authPath = ".` " + $StartPath + '/cert/Connect-AzureCertAuthps1.ps1'
+$TF_AUTH_VARIABLES = '. C:\01servers\' + $CompanyName + '\cert\Terraform-EnvironmentalAuthVariables.ps1'
+Invoke-Expression -Command $TF_AUTH_VARIABLES
 
 if ( -not ($AccObj = Get-Module -Name Az.Accounts -Verbose:$false) ) {
     Import-Module -Name Az.Accounts -Verbose:$false 
+} else {
+    Write-Verbose -Message $($AccObj.Name)
 }
 
 $Context = Get-AzContext

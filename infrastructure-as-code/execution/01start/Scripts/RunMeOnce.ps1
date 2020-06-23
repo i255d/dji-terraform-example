@@ -1,25 +1,29 @@
 [CmdletBinding()]
 param(
-    [string]$CompanyName,
-    [string]$TFVersion,
-    [string]$StartEnvironment 
+    [string]$CompanyName
 )
+
+###  Prior to running, fill in ..\source\workstationcfg.ps1 before running this script.
+$env:TF_VAR_First_Set_Location = 'C:\vsts\IA\danspersonalportal\infrastructure-as-code\execution\01start\tf'
+Set-Location -Path $env:TF_VAR_First_Set_Location
 try {
     . ..\source\workstationcfg.ps1
 } catch {
     Write-Error -Message "The command prompt is not at `"..\..\..\execution\01start\tf`""
 }
 
-####  Must verify that storage account name is availble for use. ####
-####  Storage account names are unique all across azure   ####
+$Feature = 'storage_account_state'
+if ( Test-Path -Path '..\source\tfconfig.ps1' ) {
+    . ..\source\tfconfig.ps1 -CN $Companyname -TF $TFVersion -Ftr $Feature -Rsn $ResourceName
+} else {
+    throw "Test-Path FAILED - '..\source\tfconfig.ps1'"
+}
+
+####   Must verify that storage account name for Terraform remote state is availble for use. ####
+####   Storage account names are unique all across azure   ####
 ##  This creates the configuration files for Resourcegroups, Virtual Networks in Get-EnvironmentVariables.ps1, Subnets, and Public IP
-## Then is createst the Storage Accounts and Containers for State for each environment.  
+##  Then it creates the Storage Accounts and Containers for State for each environment.  
 
-
-$StartTFPath = 'C:/vsts/IA/' + $CompanyName + '/infrastructure-as-code/execution/01start/tf'
-Set-Location -Path $StartTFPath
-#     . ..\source\tfconfig.ps1
-$VerbosePreference = 'continue'
 if ( -not (Test-Path -Path $StartPath) ) {
     mkdir $StartPath
     Write-Verbose -Message "New Directory made: `"$StartPath`""
@@ -32,6 +36,7 @@ if ( -not ( Test-Path -Path $tfPath ) ) {
 
 $configurationPath = '..\..\..\configuration\'
 $environmentPath = '..\..\..\environment\'
+###   IMPORT CSV File.
 $networkObj = Import-Csv -Path ..\source\BaseInfrastructure.csv
 foreach ( $feature in $networkObj ) {
         $envFolder = $environmentPath + $feature.environment
@@ -57,6 +62,7 @@ $tags = @"
     $diagnostics_resource_group_name = $feature.environment + '_' + $feature.diagnostics_resource_group_name
     $diagnostics_storage_account_name = $feature.environment + $feature.diagnostics_storage_account_name
     $drgFile = $rgDirectory + '\' + $diagnostics_resource_group_name + '.ps1'
+
 $drgValue = @"
     `$ENV:TF_VAR_resource_group_name                =       `'$diagnostics_resource_group_name`'
 "@
@@ -72,8 +78,8 @@ $nrgValue = @"
         New-Item -Path $nrgFile -ItemType File -value  $($nrgValue + "`n" + $tags)
     }
 
-    $storage_account_state_name = $feature.environment + $feature.storage_account_state_name
-    $StateSAPath = $configurationPath + 'storage_account_state\02built'
+    $storage_account_state_name = $feature.environment + '_' + $feature.storage_account_state_name
+    $StateSAPath = $configurationPath + 'storage_account_state\01'
     $StateSAFile = $StateSAPath + '\' + $storage_account_state_name + '.ps1'
 $stateValue = @"
 ###  The variable for storage_account_state_name is included for naming of State file for recreate state.
@@ -89,12 +95,12 @@ $stateValue = @"
 
     $virtual_network_name = $feature.environment + '_' + $feature.virtual_network_name
     $network_security_group_name = $feature.environment + '_' + $feature.network_security_group_name
-    $dnsSplit = $feature.virtual_network_dns_servers.Split(",").trim().replace("`"","")
+    #$dnsSplit = $feature.virtual_network_dns_servers.Split(",").trim().replace("`"","")
 $envVariables = @"
     `$ENV:TF_VAR_virtual_network_resource_group_name=       `'$network_resource_group_name`'
     `$env:TF_VAR_virtual_network_name               =       `'$virtual_network_name`'
     `$env:TF_VAR_virtual_network_address_space      =       `'[`"$($feature.virtual_network_address_space)`"]`'
-    `$env:TF_VAR_virtual_network_dns_servers        =       `'[`"$($dnsSplit[0])`", `"$($dnsSplit[1])`"]`'
+    `$env:TF_VAR_virtual_network_dns_servers        =       `'$($feature.virtual_network_dns_servers)`'
     `$env:TF_VAR_network_security_group_name        =       `'$network_security_group_name`'
     `$ENV:TF_VAR_storage_account_state_name         =       `'$storage_account_state_name`'
     `$ENV:TF_VAR_tbe_resource_group_name            =       `'$tbe_resource_group_name`'
@@ -106,7 +112,6 @@ $envVariables = @"
     `$ENV:TF_VAR_diagnostics_resource_group_name    =       `'$diagnostics_resource_group_name`'
     `$env:TF_VAR_diag_storage_account_name          =       `'$diagnostics_storage_account_name`'
     `$IsNetworkBuilt                                =       `$false
-
 "@
     Add-Content -Path $envFile -Value $($envVariables + "`n" + $tags)
 
@@ -239,10 +244,10 @@ $pipVariables = @"
 #     ../../../execution/storage_account_state/scripts/Invoke-StorageAccountState.ps1 @InvSASParams
 # }
     .  ..\..\..\environment\prod\Get-EnvironmentVariables.ps1
-    $tfPath = $StartPath + '/tfs'
     $networkObj = Import-Csv -Path ..\source\BaseInfrastructure.csv
     $networkObj.environment
     $InvSASParams = @{
+        ResourceName = $storage_account_state_name 
         CurrentRepoPath = $CurrentRepoPath
         PrivateConfigurationPath = $tfPath
         Environment = $StartEnvironment 
