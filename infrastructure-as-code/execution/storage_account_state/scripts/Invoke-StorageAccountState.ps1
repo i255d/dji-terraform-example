@@ -14,6 +14,7 @@ try {
 } catch {
   Write-Error -Message "The command prompt is not at `"..\..\..\execution\01start\tf`""
 }
+dir env:TF_VAR_*
 
 $ResourceName = 'prod_terrafstate444'
 $CurrentRepoPath = $CurrentRepoPath
@@ -30,8 +31,8 @@ if ( Test-Path -Path '..\source\tfconfig.ps1' ) {
 } else {
     throw "Test-Path FAILED - '..\source\tfconfig.ps1'"
 }
-$dotenvpath = '.` ' + $vNetworkPath
-Invoke-Expression -Command $dotenvpath 
+# $dotenvpath = '.` ' + $vNetworkPath
+# Invoke-Expression -Command $dotenvpath 
 
 Get-ResourceVariables -ResourceName $ResourceName
 Write-Verbose -Message "`$env:TF_VAR_storage_account_name : $env:TF_VAR_storage_account_name - $env:TF_VAR_share_name"
