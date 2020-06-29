@@ -2,7 +2,9 @@
 param(
     [string]$CompanyName
 )
-
+$CompanyName = 'danspersonalportal'
+# $TF_AUTH_VARIABLES = '. C:\01servers\' + $CompanyName + '\cert\Terraform-EnvironmentalAuthVariables.ps1'
+# Invoke-Expression -Command $TF_AUTH_VARIABLES
 ###  Prior to running, fill in ..\source\workstationcfg.ps1 before running this script.
 $env:TF_VAR_First_Set_Location = 'C:\vsts\IA\danspersonalportal\infrastructure-as-code\execution\01start\tf'
 Set-Location -Path $env:TF_VAR_First_Set_Location
@@ -12,12 +14,12 @@ try {
     Write-Error -Message "The command prompt is not at `"..\..\..\execution\01start\tf`""
 }
 
-$Feature = 'storage_account_state'
-if ( Test-Path -Path '..\source\tfconfig.ps1' ) {
-    . ..\source\tfconfig.ps1 -CN $Companyname -TF $TFVersion -Ftr $Feature -Rsn $ResourceName
-} else {
-    throw "Test-Path FAILED - '..\source\tfconfig.ps1'"
-}
+# $Feature = 'storage_account_state'
+# if ( Test-Path -Path '..\source\tfconfig.ps1' ) {
+#     . ..\source\tfconfig.ps1 -CN $Companyname -TF $TFVersion -Ftr $Feature -Rsn $ResourceName
+# } else {
+#     throw "Test-Path FAILED - '..\source\tfconfig.ps1'"
+# }
 
 ####   Must verify that storage account name for Terraform remote state is availble for use. ####
 ####   Storage account names are unique all across azure   ####

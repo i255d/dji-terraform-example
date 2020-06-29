@@ -3,7 +3,7 @@
     $env:TF_VAR_virtual_network_address_space      =       '["10.160.0.0/16"]'
     $env:TF_VAR_virtual_network_dns_servers        =       'Default'
     $env:TF_VAR_network_security_group_name        =       'prod_network_security_group'
-    $ENV:TF_VAR_storage_account_state_name         =       'prodterrafstate444'
+    $ENV:TF_VAR_storage_account_state_name         =       'prod_terrafstate444'
     $ENV:TF_VAR_tbe_resource_group_name            =       'prod_terraform_state'
     $ENV:TF_VAR_tbe_container_name                 =       'terraformstate'
     $ENV:TF_VAR_account_tier                       =       'Standard'
