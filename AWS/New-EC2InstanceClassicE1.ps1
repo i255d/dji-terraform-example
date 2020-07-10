@@ -1,4 +1,4 @@
-#  Note: This creates a EC2-VPC, not a EC2-Classic
+#  Note: This creates a EC2-Classic, not a EC2-VCP
 Install-Module AWSPowerShell 
 Set-AWSCredential -ProfileName danspersonalaws
 $myIp = ((curl http://icanhazip.com).Content).trim() + '/32'
